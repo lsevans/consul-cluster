@@ -64,17 +64,12 @@ def getAsgInstances(asg_name):
     return instances
 
 region = getRegion()
-print region
 EC2 = boto.ec2.connect_to_region(region)
 AUTOSCALE = boto.ec2.autoscale.connect_to_region(region)
 
 reservations = EC2.get_all_instances()
 instances = [i for r in reservations for i in r.instances]
-print instances
-print reservations[0].instances[0]
-print getMe()
 my_asg_name = getMyAsgName()
-print my_asg_name
 oldest_instance = None
 if my_asg_name  != None:
     instances = getAsgInstances(my_asg_name)

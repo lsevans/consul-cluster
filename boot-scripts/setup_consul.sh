@@ -13,19 +13,20 @@
 ##
 ######################################################################
 
-consul_config_dir='/etc'
-consul_data_dir='/var/consul/data'
-consul_ui_dir='/var/consul/ui'
+consul_config_dir=${HOME}/consul
+consul_data_dir=${HOME}/consul/data
+consul_ui_dir=${HOME}/consul/ui:w
 
 mkdir -p "$consul_config_dir"
 mkdir -p "$consul_data_dir"
 mkdir -p "$consul_ui_dir"
 
+GROUP_SIZE_MIN="${CONSUL_GROUP_SIZE_MIN:-1}"
 region="$(curl -sL 169.254.169.254/latest/meta-data/placement/availability-zone | sed '$s/.$//')"
 
 addresses="$(python ./lib/group_addresses.py)"
 ## lets wait until the minimum actually exists
-while [ "$(wc -l < <(echo $addresses | perl -pe 's{\s}{\n}g'))" -lt "${CONSUL_GROUP_SIZE_MIN:-0}" ]; do
+while [ "$(wc -l < <(echo $addresses | perl -pe 's{\s}{\n}g'))" -lt "$GROUP_SIZE_MIN" ]; do
     sleep 1
     addresses="$(python ./lib/group_addresses.py)"
 done
@@ -50,7 +51,7 @@ done
 
 join_or_bootstrap=""
 if [ "true" = "$is_leader" ]; then
-    join_or_bootstrap="\"bootstrap_expect\":$CONSUL_GROUP_SIZE_MIN,"
+    join_or_bootstrap="\"bootstrap_expect\":$GROUP_SIZE_MIN,"
 else
     join_or_bootstrap="\"join\": [$joinArr],"
 fi
