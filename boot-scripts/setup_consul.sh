@@ -49,10 +49,8 @@ for ip in $addresses; do
     fi
 done
 
-is_server=false
-if [ "server" = "$1" ]; then
-    is_server=true
-fi
+is_server=true
+if [ -z ${CONSUL_SERVER} ]; then is_server=false; fi
 
 join_or_bootstrap=""
 if [ "true" = "$is_leader" ] && [ "true" = "$is_server" ]; then

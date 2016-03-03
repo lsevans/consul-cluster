@@ -20,8 +20,8 @@ parser.add_argument("-c", "--component", nargs="?", help="Finds instances with c
 parser.add_argument("-r", "--region", nargs="?", help="Finds in specified region. Defaults to current region")
 args = parser.parse_args()
 
-region = args.region
-component = args.component
+region = os.getenv('CONSUL_CLUSTER_REGION', False)
+component = os.getenv('CONSUL_CLUSTER_TAG', "consul-server")
 MY_AZ = None
 INSTANCE_ID = None
 
