@@ -13,15 +13,10 @@ from boto.vpc import VPCConnection
 import subprocess
 import socket
 import time
-import argparse
-
-parser = argparse.ArgumentParser()
-parser.add_argument("-c", "--component", nargs="?", help="Finds instances with component key of specified value", default="consul-server")
-parser.add_argument("-r", "--region", nargs="?", help="Finds in specified region. Defaults to current region")
-args = parser.parse_args()
 
 region = os.getenv('CONSUL_CLUSTER_REGION', False)
-component = os.getenv('CONSUL_CLUSTER_TAG', "consul-server")
+tag_key = os.getenv('CONSUL_CLUSTER_TAG_KEY', 'component')
+tag_value = os.getenv('CONSUL_CLUSTER_TAG_VALUE', 'consul-server')
 MY_AZ = None
 INSTANCE_ID = None
 
@@ -58,8 +53,8 @@ def getMe():
     ## don't cache this as our instance attributes can change
     return EC2.get_only_instances(instance_ids=[getInstanceId()])[0]
 
-def getTagInstances(tag_name):
-    reservations = EC2.get_all_instances(filters={'tag:component':[tag_name]})
+def getTagInstances(tag_key, tag_value):
+    reservations = EC2.get_all_instances(filters={'tag:'+tag_key:[tag_value]})
     instances = [i for r in reservations for i in r.instances]
     return instances
 
@@ -69,8 +64,8 @@ if not region:
 EC2 = boto.ec2.connect_to_region(region)
 AUTOSCALE = boto.ec2.autoscale.connect_to_region(region)
 
-if component  != None:
-    instances = getTagInstances(component)
+if tag_key != None:
+    instances = getTagInstances(tag_key, tag_value)
     times = []
     for instance in range(0, len(instances)):
         times.append({'id':instances[instance].id, 'launch_time':instances[instance].launch_time, 'private_ip_address': instances[instance].private_ip_address })

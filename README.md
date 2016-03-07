@@ -19,7 +19,8 @@ This image runs scripts based on the bootscripts from the project: https://githu
 ##### Optional variables for running server in AWS:
 - $CONSUL_CLUSTER_REGION: Used with autodiscovery in AWS, this is which region to check for other consul nodes. 
   Defaults to image's current region
-- $CONSUL_CLUSTER_TAG: What tag to look for other consul nodes with. Defaults to find nodes with `"component: consul-server"`
+- $CONSUL_CLUSTER_TAG_KEY: What tag key to look for to find other consul nodes to connect to "Defaults to `component`"
+- $CONSUL_CLUSTER_TAG_VALUE: What tag value to look for other consul nodes with. Defaults to find nodes with `"component: consul-server"`
 
 #### The scripts:
   * lib/tag_addresses.py

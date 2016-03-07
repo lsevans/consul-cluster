@@ -94,5 +94,4 @@ cat <<EOF > "$consul_config_dir/consul.json"
     "ui_dir": "$consul_ui_dir",
     "datacenter": "${CONSUL_DATACENTER_NAME:-$region}"
 }
-echo "$consul_config_dir/consul.json"
 EOF
