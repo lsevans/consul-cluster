@@ -24,11 +24,8 @@ joinArr="$(echo ${CONSUL_JOIN_SERVERS} | sed 's/\(\[\|\]\)//g' )"
 is_leader="false"
 group_size_min="${CONSUL_GROUP_SIZE_MIN:-1}"
 is_server="true"
+
 if [ -z "${CONSUL_SERVER}" ]; then is_server=false; fi
-region=""
-if [ "${CONSUL_AUTODISCOVER}" ]; then
-    region="$(curl -sL 169.254.169.254/latest/meta-data/placement/availability-zone | sed '$s/.$//')"
-fi
 
 if [ -z "$CONSUL_JOIN_SERVERS" ] && [ "$CONSUL_AUTODISCOVER" ]; then
     # Do AWS discovery
@@ -59,7 +56,7 @@ if [ -z "$CONSUL_JOIN_SERVERS" ] && [ "$CONSUL_AUTODISCOVER" ]; then
 fi
 
 # If we still don't have anyone to join to, we better bootstrap
-if [ -z $joinArr ]; then
+if [ -z "$joinArr" ]; then
   is_leader=true
 fi
 
@@ -83,6 +80,6 @@ cat <<EOF > "$consul_config_dir/consul.json"
     "rejoin_after_leave": true,
     "data_dir": "$consul_data_dir",
     "ui_dir": "$consul_ui_dir",
-    "datacenter": "${CONSUL_DATACENTER_NAME:-$region}"
+    "datacenter": "${CONSUL_DATACENTER_NAME:-vpc}"
 }
 EOF
