@@ -32,7 +32,7 @@ EOF
 if ! crontab -l | grep -q "$script"; then
     crontab -l > mycron
     #echo new cron into cron file
-    #echo "* * * * * /bin/bash $script" >> mycron
+    echo "* * * * * /bin/bash $script" >> mycron
 
     #install new cron file
     crontab mycron

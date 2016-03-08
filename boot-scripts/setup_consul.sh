@@ -21,16 +21,17 @@ mkdir -p "$consul_ui_dir"
 
 my_ipaddress="$(ip addr show eth0 | grep 'inet ' | cut -d/ -f1 | awk '{ print $2}')"
 joinArr="$(echo ${CONSUL_JOIN_SERVERS} | sed 's/\(\[\|\]\)//g' )"
-echo $joinArr
 is_leader="false"
-region=""
 group_size_min="${CONSUL_GROUP_SIZE_MIN:-1}"
 is_server="true"
 if [ -z "${CONSUL_SERVER}" ]; then is_server=false; fi
+region=""
+if [ "${CONSUL_AUTODISCOVER}" ]; then
+    region="$(curl -sL 169.254.169.254/latest/meta-data/placement/availability-zone | sed '$s/.$//')"
+fi
 
 if [ -z "$CONSUL_JOIN_SERVERS" ] && [ "$CONSUL_AUTODISCOVER" ]; then
     # Do AWS discovery
-    region="$(curl -sL 169.254.169.254/latest/meta-data/placement/availability-zone | sed '$s/.$//')"
     addresses="$(python ./lib/tag_addresses.py --component consul-server)"
 
     ## lets wait until the minimum actually exists
