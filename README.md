@@ -3,14 +3,15 @@ Dockerized version of self-healing and scaling consul cluster
 
 This image runs scripts based on the bootscripts from the project: https://github.com/CloudCoreo/consul-cluster/tree/master/boot-scripts
 
-#### Environment variables for running server in AWS:
+#### Environment variables for running server in AWS using autodiscovery:
 - $CONSUL_AUTODISCOVER=true
 - $CONSUL_SERVER=true
 - $AWS_ACCESS_KEY_ID
 - $AWS_SECRET_ACCESS_KEY
 
-#### Environment variables for running dev agent:
-- $CONSUL_JOIIN_SERVERS=["ip1", "ip2"]
+#### Environment variables for running AWS manual join:
+- $CONSUL_JOIIN_SERVERS=["1.2.3.4", "5.6.7.8"]
+- $CONSUL_SERVER=true
 
 #### Environment variables for running dev server:
 - $CONSUL_JOIIN_SERVERS=["ip1", "ip2"]
