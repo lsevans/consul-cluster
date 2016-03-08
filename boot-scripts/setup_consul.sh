@@ -2,10 +2,8 @@
 ######################################################################
 ##
 ## Required Variables:
-##   CONSUL_GROUP_SIZE_MIN
-##   CONSUL_DATACENTER_NAME
-##   CONSUL_UPSTREAM_DNS
-##
+##  Either CONSUL_JOIN_SERVERS=["1.2.3.4",".5.6.7.8"] OR 
+##    CONSUL_AUTODISCOVER=true with proper AWS credentials
 ######################################################################
 ##
 ## Required Packages
@@ -21,23 +19,16 @@ mkdir -p "$consul_config_dir"
 mkdir -p "$consul_data_dir"
 mkdir -p "$consul_ui_dir"
 
-my_ipaddress=""
-region=""
-joinArr=""
-
+my_ipaddress="$(ip addr show eth0 | grep 'inet ' | cut -d/ -f1 | awk '{ print $2}')"
+joinArr="$(echo ${CONSUL_JOIN_SERVERS} | sed 's/\(\[\|\]\)//g' )"
+echo $joinArr
 is_leader="false"
-is_server="true"
-if [ -z ${CONSUL_SERVER} ]; then is_server=false; fi
-
+region=""
 group_size_min="${CONSUL_GROUP_SIZE_MIN:-1}"
+is_server="true"
+if [ -z "${CONSUL_SERVER}" ]; then is_server=false; fi
 
-if [ "$CONSUL_JOIIN_SERVERS" ] && [ -z "$CONSUL_AUTODISCOVER" ]; then
-    # Dev
-    my_ipaddress="$(ip addr show eth0 | grep 'inet ' | cut -d/ -f1 | awk '{ print $2}')"
-    joinArr="$(echo ${CONSUL_JOIIN_SERVERS} | sed 's/\(\[\|\]\)//g' )"
-    is_leader="true"
-    region="Dev"
-elif [ -z "$CONSUL_JOIN_SERVERS" ] && [ "$CONSUL_AUTODISCOVER" ]; then
+if [ -z "$CONSUL_JOIN_SERVERS" ] && [ "$CONSUL_AUTODISCOVER" ]; then
     # Do AWS discovery
     region="$(curl -sL 169.254.169.254/latest/meta-data/placement/availability-zone | sed '$s/.$//')"
     addresses="$(python ./lib/tag_addresses.py --component consul-server)"
@@ -56,21 +47,20 @@ elif [ -z "$CONSUL_JOIN_SERVERS" ] && [ "$CONSUL_AUTODISCOVER" ]; then
     fi
 
     for ip in $addresses; do
-    ## do doing join myself
-    if [ "$ip" != "$my_ipaddress" ]; then
-	if [ -n "$joinArr" ]; then
-	    joinArr="$joinArr ,"
-	fi
-	joinArr="$joinArr \"$ip\""
-    fi
-done
-else
-    echo "Either consul join servers or Autodiscover must be enabled"
-    echo CONSUL_JOIIN_SERVER=["\"<ip>\""] OR
-    echo CONSUL_AUTOJOIN=true
-    exit 1
+      ## do doing join myself
+      if [ "$ip" != "$my_ipaddress" ]; then
+          if [ -n "$joinArr" ]; then
+              joinArr="$joinArr ,"
+          fi
+          joinArr="$joinArr \"$ip\""
+      fi
+    done
 fi
 
+# If we still don't have anyone to join to, we better bootstrap
+if [ -z $joinArr ]; then
+  is_leader=true
+fi
 
 join_or_bootstrap=""
 if [ "true" = "$is_leader" ] && [ "true" = "$is_server" ]; then
