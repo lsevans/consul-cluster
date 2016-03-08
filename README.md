@@ -9,7 +9,7 @@ This image runs scripts based on the bootscripts from the project: https://githu
 - $AWS_ACCESS_KEY_ID
 - $AWS_SECRET_ACCESS_KEY
 
-#### Environment variables for running AWS manual join:
+#### Environment variables for running manual join:
 - $CONSUL_JOIIN_SERVERS=["1.2.3.4", "5.6.7.8"]
 - $CONSUL_SERVER=true
 
