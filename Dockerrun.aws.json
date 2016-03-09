@@ -1,0 +1,68 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "name": "consul-cluster",
+      "image": "lukeevans/consul-cluster:0.6.3-1",
+      "essential": true,
+      "memory": 1024,
+      "portMappings": [
+        {
+          "hostPort": 8301,
+          "containerPort": 8301,
+          "protocol": "tcp"
+        },
+        {
+          "hostPort": 8301,
+          "containerPort": 8301,
+          "protocol": "udp"
+        },
+        {
+          "hostPort": 8302,
+          "containerPort": 8302,
+          "protocol": "tcp"
+        },
+        {
+          "hostPort": 8302,
+          "containerPort": 8302,
+          "protocol": "udp"
+        },
+        {
+          "hostPort": 8400,
+          "containerPort": 8400,
+          "protocol": "tcp"
+        },
+        {
+          "hostPort": 8500,
+          "containerPort": 8500,
+          "protocol": "tcp"
+        },
+        {
+          "hostPort": 8600,
+          "containerPort": 8600,
+          "protocol": "tcp"
+        },
+        {
+          "hostPort": 8600,
+          "containerPort": 8600,
+          "protocol": "udp"
+        },
+        {
+          "hostPort": 8300,
+          "containerPort": 8300,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "CONSUL_SERVER",
+          "value":true
+        },
+        {
+          "name": "CONSUL_AUTODISCOVER",
+          "value":true
+        }
+      ]
+    }
+  ]
+}
