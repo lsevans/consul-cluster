@@ -56,11 +56,11 @@
       "environment": [
         {
           "name": "CONSUL_SERVER",
-          "value":true
+          "value": true
         },
         {
           "name": "CONSUL_AUTODISCOVER",
-          "value":true
+          "value": true
         }
       ]
     }
