@@ -71,5 +71,7 @@ if tag_key != None:
         times.append({'id':instances[instance].id, 'launch_time':instances[instance].launch_time, 'private_ip_address': instances[instance].private_ip_address })
     sor = sorted(times, key=lambda k: k['launch_time'])
     for ins in range(0, len(sor)):
-        print sor[ins]['private_ip_address']
+        address = sor[ins]['private_ip_address']
+        if "None" not in address:
+            print address
 

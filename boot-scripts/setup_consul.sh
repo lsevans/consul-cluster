@@ -19,7 +19,8 @@ mkdir -p "$consul_config_dir"
 mkdir -p "$consul_data_dir"
 mkdir -p "$consul_ui_dir"
 
-my_ipaddress="$(ip addr show eth0 | grep 'inet ' | cut -d/ -f1 | awk '{ print $2}')"
+bind_address="$(ip addr show eth0 | grep 'inet ' | cut -d/ -f1 | awk '{ print $2}')"
+advertise_address=bind_address
 joinArr="$(echo ${CONSUL_JOIN_SERVERS} | sed 's/\(\[\|\]\)//g' )"
 is_leader="false"
 group_size_min="${CONSUL_GROUP_SIZE_MIN:-1}"
@@ -38,15 +39,15 @@ if [ -z "$CONSUL_JOIN_SERVERS" ] && [ "$CONSUL_AUTODISCOVER" ]; then
     done
 
     leader_ip="$(echo $addresses | perl -pe 's{\s}{\n}g' | head -1)"
-    my_ipaddress="$(curl -sL 169.254.169.254/latest/meta-data/local-ipv4)"
+    advertise_address="$(curl -sL 169.254.169.254/latest/meta-data/local-ipv4)"
     is_leader="false"
-    if [ "$my_ipaddress" = "$leader_ip" ]; then
+    if [ "$advertise_address" = "$leader_ip" ]; then
         is_leader="true"
     fi
 
     for ip in $addresses; do
       ## do doing join myself
-      if [ "$ip" != "$my_ipaddress" ]; then
+      if [ "$ip" != "$advertise_address" ]; then
           if [ -n "$joinArr" ]; then
               joinArr="$joinArr ,"
           fi
@@ -71,10 +72,11 @@ cat <<EOF > "$consul_config_dir/consul.json"
 {
     $join_or_bootstrap
     "addresses" : {
-        "http": "$my_ipaddress"
+        "http": "$bind_address"
     },
-    "bind_addr": "$my_ipaddress",
-    "node_name": "$my_ipaddress",
+    "bind_addr": "$bind_address",
+    "node_name": "$advertise_address",
+    "advertise_addr": "$advertise_address",
     "log_level": "INFO",
     "server": $is_server,
     "rejoin_after_leave": true,
