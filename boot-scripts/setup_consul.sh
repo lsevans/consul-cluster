@@ -30,12 +30,12 @@ if [ -z "${CONSUL_SERVER}" ]; then is_server=false; fi
 
 if [ -z "$CONSUL_JOIN_SERVERS" ] && [ "$CONSUL_AUTODISCOVER" ]; then
     # Do AWS discovery
-    addresses="$(python ./lib/tag_addresses.py --component consul-server)"
+    addresses="$(python ./lib/get_addresses.py --component consul-server)"
 
     ## lets wait until the minimum actually exists
     while [ "$(wc -l < <(echo $addresses | perl -pe 's{\s}{\n}g'))" -lt "$group_size_min" ]; do
         sleep 1
-        addresses="$(python ./lib/tag_addresses.py --component consul-server)"
+        addresses="$(python ./lib/get_addresses.py --component consul-server)"
     done
 
     leader_ip="$(echo $addresses | perl -pe 's{\s}{\n}g' | head -1)"
