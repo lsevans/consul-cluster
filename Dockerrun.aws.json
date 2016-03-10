@@ -61,6 +61,14 @@
         {
           "name": "CONSUL_AUTODISCOVER",
           "value": true
+        },
+        {
+          "name": "CONSUL_CLUSTER_TAG_KEY",
+          "value": "elasticbeanstalk:environment-name"
+        },
+        {
+          "name": "CONSUL_CLUSTER_TAG_VALUE",
+          "value": "consul-cluster-prod"
         }
       ]
     }
