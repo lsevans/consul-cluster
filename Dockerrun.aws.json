@@ -8,6 +8,11 @@
       "memory": 1024,
       "portMappings": [
         {
+          "hostPort": 8300,
+          "containerPort": 8300,
+          "protocol": "tcp"
+        },
+        {
           "hostPort": 8301,
           "containerPort": 8301,
           "protocol": "tcp"
@@ -46,11 +51,6 @@
           "hostPort": 8600,
           "containerPort": 8600,
           "protocol": "udp"
-        },
-        {
-          "hostPort": 8300,
-          "containerPort": 8300,
-          "protocol": "tcp"
         }
       ],
       "environment": [
