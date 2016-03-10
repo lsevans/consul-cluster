@@ -72,6 +72,6 @@ if tag_key != None:
     sor = sorted(times, key=lambda k: k['launch_time'])
     for ins in range(0, len(sor)):
         address = sor[ins]['private_ip_address']
-        if "None" not in address:
+        if address is not None:
             print address
 
