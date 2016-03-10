@@ -20,8 +20,8 @@ Note: When the instances come up, they will query the AWS API to find other cons
 ##### Environment variables definitions:
 - $CONSUL_CLUSTER_REGION: Used with autodiscovery in AWS, this is which region to check for other consul nodes. 
   Defaults to image's current region
-- $CONSUL_CLUSTER_TAG_KEY: What tag key to look for to find other consul nodes to connect to "Defaults to `component`"
-- $CONSUL_CLUSTER_TAG_VALUE: What tag value to look for other consul nodes with. Defaults to find nodes with `"$CONSUL_CLUSTER_TAG_KEY: consul-server"`
+- $CONSUL_CLUSTER_TAG_KEY: Instance tag key to find other consul nodes with "Defaults to `component`"
+- $CONSUL_CLUSTER_TAG_VALUE: Instance tag value to find other consul nodes with Defaults to find nodes with `"$CONSUL_CLUSTER_TAG_KEY: consul-server"`
 - $CONSUL_AUTODISCOVER: Tells the image that it should go look for nodes in $CONSUL_CLUSTER_REGION that are tagged with "$CONSUL_CLUSTER_TAG_KEY: $CONSUL_CLUSTER_TAG_VALUE"
 - $CONSUL_JOIIN_SERVERS: Used to manually join a list of nodes
 - $CONSUL_SERVER: Determines if consul starts in server mode. Defaults to true
