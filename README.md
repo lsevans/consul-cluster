@@ -7,7 +7,7 @@ This image is meant to run in AWS ElasticBeanstalk using ebs-deploy (https://git
 
 Note: When the instances come up, they will query the AWS API to find other consul members. The EBS application should be launched with an IAM role that has the policy "AmazonEC2ReadOnlyAccess"
 
-#### Example environment variables for running server in an AWS Beanstalk environment called "consul-cluster-prod":
+#### Example environment variables for running servers in an AWS Beanstalk environment called "consul-cluster-prod":
 - $CONSUL_AUTODISCOVER=true
 - $CONSUL_SERVER=true
 - $CONSUL_CLUSTER_TAG_KEY: "elasticbeanstalk:environment-name"
