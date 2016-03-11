@@ -28,7 +28,7 @@ is_server="true"
 
 if [ -z "${CONSUL_SERVER}" ]; then is_server=false; fi
 
-if [ -z "$CONSUL_JOIN_SERVERS" ] && [ "$CONSUL_AUTODISCOVER" ]; then
+if [ -z "$CONSUL_JOIN_SERVERS" ]; then
     # Do AWS discovery
     addresses="$(python ./lib/get_addresses.py --component consul-server)"
 

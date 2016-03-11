@@ -12,6 +12,7 @@ consul-server:
     - "8600:8600/udp"
   environment:
     - CONSUL_SERVER=true
-    - CONSUL_AUTODISCOVER=tag
+      #- CONSUL_CLUSTER_TAG_KEY=component
+      #- CONSUL_CLUSTER_TAG_VALUE=consul-server
     - AWS_ACCESS_KEY_ID
     - AWS_SECRET_ACCESS_KEY

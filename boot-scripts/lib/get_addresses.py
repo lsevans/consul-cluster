@@ -15,9 +15,8 @@ import socket
 import time
 
 region = os.getenv('CONSUL_CLUSTER_REGION', False)
-tag_key = os.getenv('CONSUL_CLUSTER_TAG_KEY', 'component')
-tag_value = os.getenv('CONSUL_CLUSTER_TAG_VALUE', 'consul-server')
-autodisoverType = os.getenv('CONSUL_AUTODISCOVER', 'scaling-group')
+tag_key = os.getenv('CONSUL_CLUSTER_TAG_KEY', '')
+tag_value = os.getenv('CONSUL_CLUSTER_TAG_VALUE', '')
 MY_AZ = None
 INSTANCE_ID = None
 
@@ -79,12 +78,12 @@ EC2 = boto.ec2.connect_to_region(region)
 AUTOSCALE = boto.ec2.autoscale.connect_to_region(region)
 
 instances=[]
-if autodisoverType == 'scaling-group':
+if tag_key and tag_value:
+    instances = getTagInstances(tag_key, tag_value)
+else:
     asg = getMyAsgName()
     if asg != None:
         instances = getAsgInstances(asg);
-elif autodisoverType == 'tag':
-    instances = getTagInstances(tag_key, tag_value)
 
 times = []
 for instance in range(0, len(instances)):
