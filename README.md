@@ -7,11 +7,8 @@ This image is meant to run in AWS ElasticBeanstalk using ebs-deploy (https://git
 
 Note: When the instances come up, they will query the AWS API to find other consul members. The EBS application should be launched with an IAM role that has the policy "AmazonEC2ReadOnlyAccess"
 
-#### Example environment variables for running servers in an AWS Beanstalk environment called "consul-cluster-prod":
-- $CONSUL_AUTODISCOVER=true
+#### Example environment variables for running servers in an AWS Beanstalk environment:
 - $CONSUL_SERVER=true
-- $CONSUL_CLUSTER_TAG_KEY: "elasticbeanstalk:environment-name"
-- $CONSUL_CLUSTER_TAG_VALUE: "consul-cluster-prod"
 
 #### Environment variables for running manual join:
 - $CONSUL_JOIIN_SERVERS=["1.2.3.4", "5.6.7.8"]
@@ -21,10 +18,11 @@ Note: When the instances come up, they will query the AWS API to find other cons
 - $CONSUL_CLUSTER_REGION: Used with autodiscovery in AWS, this is which region to check for other consul nodes. 
   Defaults to image's current region
 - $CONSUL_CLUSTER_TAG_KEY: Instance tag key to find other consul nodes with "Defaults to `component`"
-- $CONSUL_CLUSTER_TAG_VALUE: Instance tag value to find other consul nodes with Defaults to find nodes with `"$CONSUL_CLUSTER_TAG_KEY: consul-server"`
-- $CONSUL_AUTODISCOVER: Tells the image that it should go look for nodes in $CONSUL_CLUSTER_REGION that are tagged with "$CONSUL_CLUSTER_TAG_KEY: $CONSUL_CLUSTER_TAG_VALUE"
+- $CONSUL_CLUSTER_TAG_VALUE: Instance tag value to find other consul nodes with Defaults to find nodes with 
 - $CONSUL_JOIIN_SERVERS: Used to manually join a list of nodes
 - $CONSUL_SERVER: Determines if consul starts in server mode. Defaults to true
+
+*If Tag $CONSUL_CLUSTER_TAG_KEY and $CONSUL_CLUSTER_TAG_VALUE are not specified, it will default to looking for nodes within the current scaling group
 
 #### The scripts:
   * lib/tag_addresses.py
